@@ -25,14 +25,13 @@ public class PromoteUserToStudentAdapter implements PromoteUserToStudentReposito
     private final DisciplineJpaRepository disciplineRepository;
 
     @PersistenceContext
-    private final EntityManager entityManager;
+    private EntityManager entityManager;
 
-    public PromoteUserToStudentAdapter(UserJpaRepository userRepository, StudentJpaRepository studentRepository, MonitorJpaRepository monitorRepository, DisciplineJpaRepository disciplineRepository, EntityManager entityManager) {
+    public PromoteUserToStudentAdapter(UserJpaRepository userRepository, StudentJpaRepository studentRepository, MonitorJpaRepository monitorRepository, DisciplineJpaRepository disciplineRepository) {
         this.userRepository = userRepository;
         this.studentRepository = studentRepository;
         this.monitorRepository = monitorRepository;
         this.disciplineRepository = disciplineRepository;
-        this.entityManager = entityManager;
     }
 
 
@@ -65,7 +64,11 @@ public class PromoteUserToStudentAdapter implements PromoteUserToStudentReposito
         DisciplineJpaEntity discipline = disciplineRepository.findById(disciplineId)
                 .orElseThrow(() -> new RuntimeException("Disciplina nao encontrada"));
 
-        MonitorJpaEntity monitor = new MonitorJpaEntity(userId, student,discipline, null);
+        UserJpaEntity user = student.getUser();
+        user.setRole(br.com.cesarschool.domain.entity.enums.UserRole.MONITOR);
+        userRepository.save(user);
+
+        MonitorJpaEntity monitor = new MonitorJpaEntity(userId, student, discipline, null);
 
         monitorRepository.save(monitor);
 

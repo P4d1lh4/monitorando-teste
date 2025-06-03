@@ -49,8 +49,6 @@ public class UserService {
     public UserEntity login(String email, String password) {
         UserEntity user = loginUserRepository.loginUser(email, password);
 
-        user.setActive(true);
-
         return user;
     }
 
@@ -66,15 +64,12 @@ public class UserService {
         UserEntity user = findUserRepository.findById(idUser)
                 .orElseThrow(() -> new IllegalArgumentException("User not found id: " + idUser));
 
-        if (!user.getRole().equals("STUDENT")) {
+        if (!user.getRole().equals(UserRole.STUDENT)) {
             throw new IllegalArgumentException("User is not a student");
         }
 
         DisciplineEntity discipline = findDisciplineRepository.findById(idDiscipline)
                 .orElseThrow(() -> new IllegalArgumentException("Discipline not found id: " + idDiscipline));
-
-        user.setRole(UserRole.MONITOR);
-
 
         promoteUserToStudentRepository.promoteMonitor(user.getId(), discipline.getId());
     }

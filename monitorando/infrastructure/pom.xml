@@ -9,6 +9,7 @@
         <version>0.0.1-SNAPSHOT</version>
     </parent>
 
+    <groupId>br.com.cesarschool</groupId>
     <artifactId>infrastructure</artifactId>
 
     <dependencies>
